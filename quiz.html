@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+       <style>
+        :root {
+            --body-color: rgb(250, 250, 250);
+            --color-white: rgb(255, 255, 255);
+            --text-color-second: rgb(68, 68, 68);
+            --text-color-third: rgb(30, 159, 171);
+            --first-color: rgb(110, 87, 224);
+            --first-color-hover: rgb(40, 91, 212);
+            --second-color: rgb(0, 201, 255);
+            --third-color: rgb(192, 166, 49);
+            --first-shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+    font-family: Arial, sans-serif;
+    background-color: var(--body-color);
+    margin: 0;
+    padding: 0;
+    color: var(--text-color-second);
+    overflow: hidden; /* Add this line to prevent scrollbars */
+}
+
+.background {
+    display: flex;
+    height: 100vh; /* Update this line to set the height to viewport height */
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, rgb(26, 1, 117) 0%, rgba(225, 5, 34, 0) 70%) repeat scroll 0% 0%, 
+                linear-gradient(135deg, rgb(225, 5, 152) 10%, rgba(49, 5, 209, 0) 80%) repeat scroll 0% 0%, 
+                linear-gradient(225deg, hsla(179, 81%, 45%, 1) 10%, rgba(10, 219, 216, 0) 80%) repeat scroll 0% 0%,
+                rgba(0, 0, 0, 0) linear-gradient(315deg, rgb(189, 5, 245) 100%, rgba(9, 245, 5, 0) 70%) repeat scroll 0% 0%;
+    position: relative;
+    z-index: 0;
+    overflow: hidden; /* Add this line to prevent overflow */
+}
+
+
+
+        .background .shape {
+            filter: blur(465px);
+            position: absolute;
+        }
+
+        .background .shape:nth-child(1) {
+            background-color: #ffb0d8;
+            top: -340px;
+            width: 300px;
+            height: 300px;
+        }
+
+        .background .shape:nth-child(2) {
+            left: 100px;
+            bottom: -150px;
+            background-color: #c26cf3;
+            width: 200px;
+            height: 210px;
+        }
+
+        .background .shape:nth-child(3) {
+            background-color: #87cfdf;
+            bottom: -150px;
+            right: 100px;
+            width: 300px;
+            height: 300px;
+        }
+
+       #quiz-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: var(--color-white);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px var(--first-shadow-color);
+    position: relative;
+    z-index: 1; /* Set z-index to a higher value than background */
+}
+        h1 {
+            margin-top: 0;
+            color: var(--text-color-third);
+        }
+
+        .option {
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid var(--text-color-third);
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: var(--first-color-hover);
+        }
+
+        #result {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        #question-counter {
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    
+    <div id="quiz-container">
+        <h1>HTML, CSS, and JavaScript Quiz</h1>
+        <div id="name-entry">
+            <h2>Welcome to the Quiz!</h2>
+            <form id="name-form">
+                <label for="name">Enter your name:</label>
+                <input type="text" id="name" name="name" required>
+                <button type="submit">Start Quiz</button>
+            </form>
+        </div>
+        <div id="quiz" style="display: none;">
+            <div id="question-counter"></div>
+            <div id="question"></div>
+            <div id="options"></div>
+            <button id="submit-button">Retry</button>
+            <p id="result"></p>
+            <p id="timer"></p>
+        </div>
+        <div id="leaderboard" style="display: none;">
+            <h2>Leaderboard</h2>
+            <ol id="scores"></ol>
+        </div>
+    </div>
+	</div>
+
+    <script>
+        const questions = [
+            {
+                question: "Which of the following is NOT a semantic HTML element?",
+                options: ["<header>", "<div>", "<nav>", "<footer>"],
+                answer: 1 // It's <div> which is not a semantic element
+            },
+            {
+                question: "What does CSS stand for?",
+                options: ["Creative Style Sheets", "Cascading Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"],
+                answer: 1 // Correct answer is "Cascading Style Sheets"
+            },
+            {
+                question: "Which CSS property is used to change the text color of an element?",
+                options: ["color", "text-color", "font-color", "text-style"],
+                answer: 0 // Correct answer is "color"
+            },
+            {
+                question: "Which HTML tag is used to link an external JavaScript file?",
+                options: ["<script>", "<link>", "<js>", "<javascript>"],
+                answer: 0 // Correct answer is "<script>"
+            },
+            {
+                question: "What does HTML stand for?",
+                options: ["Hyper Text Markup Language", "Hyperlinks and Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup"],
+                answer: 0 // Correct answer is "Hyper Text Markup Language"
+            },
+            {
+                question: "Which of the following is NOT a valid way to include CSS in your HTML document?",
+                options: ["Inline CSS", "Internal CSS", "External CSS", "Embedded CSS"],
+                answer: 3 // Correct answer is "Embedded CSS"
+            },
+            {
+                question: "What is the correct way to comment in JavaScript?",
+                options: ["// Comment", "<!-- Comment -->", "/* Comment */", "(* Comment *)"],
+                answer: 2 // Correct answer is "/* Comment */"
+            },
+            {
+                question: "What is the result of 5 + '5' in JavaScript?",
+                options: ["10", "55", "Error", "Undefined"],
+                answer: 1 // Correct answer is "55"
+            },
+            {
+                question: "Which of the following is NOT a loop in JavaScript?",
+                options: ["for loop", "while loop", "do-while loop", "foreach loop"],
+                answer: 3 // Correct answer is "foreach loop"
+            },
+            {
+                question: "What is the output of the following code: console.log(typeof([]));",
+                options: ["'array'", "'object'", "'array' or 'object'", "'undefined'"],
+                answer: 1 // Correct answer is "'object'"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 120; // 2 minutes in seconds
+        let timerInterval;
+        let leaderboard = [];
+
+        const nameForm = document.getElementById('name-form');
+        const nameInput = document.getElementById('name');
+        const nameEntry = document.getElementById('name-entry');
+        const quiz = document.getElementById('quiz');
+        const leaderboardDiv = document.getElementById('leaderboard');
+        const scoresList = document.getElementById('scores');
+        const questionCounter = document.getElementById('question-counter');
+
+        nameForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = nameInput.value.trim();
+            if (name !== '') {
+                nameEntry.style.display = 'none';
+                quiz.style.display = 'block';
+                leaderboardDiv.style.display = 'none';
+                startTimer();
+                displayQuestion();
+            } else {
+                alert('Please enter your name.');
+            }
+        });
+
+        // Function to start the timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showResult();
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Function to update timer display
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `Time left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        // Function to display the current question and options
+        function displayQuestion() {
+            const currentQuizQuestion = questions[currentQuestion];
+            questionCounter.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('question').textContent = currentQuizQuestion.question;
+            
+            const optionsElement = document.getElementById('options');
+            optionsElement.innerHTML = '';
+            currentQuizQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = `${index + 1}. ${option}`;
+                optionElement.setAttribute('data-index', index);
+                optionElement.addEventListener('click', selectOption);
+                optionsElement.appendChild(optionElement);
+            });
+        }
+
+        function selectOption() {
+            const selectedOptionIndex = parseInt(this.getAttribute('data-index'));
+            const currentQuizQuestion = questions[currentQuestion];
+            if (selectedOptionIndex === currentQuizQuestion.answer) {
+                score++;
+            }
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+            } else {
+                clearInterval(timerInterval); // Stop the timer
+                showResult();
+            }
+        }
+
+        function showResult() {
+            const name = nameInput.value.trim();
+    const resultElement = document.getElementById('result');
+    resultElement.textContent = `${name}, you scored ${score} out of ${questions.length}!`;
+    if (score === questions.length) {
+        resultElement.style.color = 'green';
+    } else {
+        resultElement.style.color = 'red';
+    }
+    updateLeaderboard(name, score);
+    displayLeaderboard();
+
+    // Replace the submit button with a retry button
+    const submitButton = document.getElementById('submit-button');
+    submitButton.textContent = 'Retry';
+    submitButton.onclick = retryQuiz;
+        }
+
+		function retryQuiz() {
+    // Reset quiz state
+    currentQuestion = 0;
+    score = 0;
+    timeLeft -=15; // Reset timer
+    clearInterval(timerInterval); // Stop timer if running
+    updateTimerDisplay(); // Reset timer display
+    startTimer();
+	displayQuestion();
+}
+
+// Assign retryQuiz function to the button click event
+const submitButton = document.getElementById('submit-button');
+submitButton.addEventListener('click', retryQuiz);
+
+        function updateLeaderboard(name, score) {
+            leaderboard.push({ name, score });
+            leaderboard.sort((a, b) => b.score - a.score); // Sort leaderboard by score descending
+            if (leaderboard.length > 5) {
+                leaderboard.pop(); // Keep only top 5 scores
+            }
+        }
+
+        function displayLeaderboard() {
+            scoresList.innerHTML = ''; // Clear previous leaderboard
+            leaderboard.forEach((entry, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+                scoresList.appendChild(listItem);
+            });
+            leaderboardDiv.style.display = 'block';
+        }
+
+        
+
+        // Load leaderboard data from localStorage on page load
+        window.addEventListener('load', function () {
+            const storedLeaderboard = localStorage.getItem('leaderboard');
+            if (storedLeaderboard) {
+                leaderboard = JSON.parse(storedLeaderboard);
+                displayLeaderboard();
+            }
+        });
+
+        // Function to update leaderboard data in localStorage
+        function updateLeaderboard(name, score) {
+            leaderboard.push({ name, score });
+            leaderboard.sort((a, b) => b.score - a.score);
+            if (leaderboard.length > 5) {
+                leaderboard.pop();
+            }
+            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+        }
+    </script>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+       <style>
+        :root {
+            --body-color: rgb(250, 250, 250);
+            --color-white: rgb(255, 255, 255);
+            --text-color-second: rgb(68, 68, 68);
+            --text-color-third: rgb(30, 159, 171);
+            --first-color: rgb(110, 87, 224);
+            --first-color-hover: rgb(40, 91, 212);
+            --second-color: rgb(0, 201, 255);
+            --third-color: rgb(192, 166, 49);
+            --first-shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+    font-family: Arial, sans-serif;
+    background-color: var(--body-color);
+    margin: 0;
+    padding: 0;
+    color: var(--text-color-second);
+    overflow: hidden; /* Add this line to prevent scrollbars */
+}
+
+.background {
+    display: flex;
+    height: 100vh; /* Update this line to set the height to viewport height */
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, rgb(26, 1, 117) 0%, rgba(225, 5, 34, 0) 70%) repeat scroll 0% 0%, 
+                linear-gradient(135deg, rgb(225, 5, 152) 10%, rgba(49, 5, 209, 0) 80%) repeat scroll 0% 0%, 
+                linear-gradient(225deg, hsla(179, 81%, 45%, 1) 10%, rgba(10, 219, 216, 0) 80%) repeat scroll 0% 0%,
+                rgba(0, 0, 0, 0) linear-gradient(315deg, rgb(189, 5, 245) 100%, rgba(9, 245, 5, 0) 70%) repeat scroll 0% 0%;
+    position: relative;
+    z-index: 0;
+    overflow: hidden; /* Add this line to prevent overflow */
+}
+
+
+
+        .background .shape {
+            filter: blur(465px);
+            position: absolute;
+        }
+
+        .background .shape:nth-child(1) {
+            background-color: #ffb0d8;
+            top: -340px;
+            width: 300px;
+            height: 300px;
+        }
+
+        .background .shape:nth-child(2) {
+            left: 100px;
+            bottom: -150px;
+            background-color: #c26cf3;
+            width: 200px;
+            height: 210px;
+        }
+
+        .background .shape:nth-child(3) {
+            background-color: #87cfdf;
+            bottom: -150px;
+            right: 100px;
+            width: 300px;
+            height: 300px;
+        }
+
+       #quiz-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: var(--color-white);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px var(--first-shadow-color);
+    position: relative;
+    z-index: 1; /* Set z-index to a higher value than background */
+}
+        h1 {
+            margin-top: 0;
+            color: var(--text-color-third);
+        }
+
+        .option {
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid var(--text-color-third);
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: var(--first-color-hover);
+        }
+
+        #result {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        #question-counter {
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    
+    <div id="quiz-container">
+        <h1>HTML, CSS, and JavaScript Quiz</h1>
+        <div id="name-entry">
+            <h2>Welcome to the Quiz!</h2>
+            <form id="name-form">
+                <label for="name">Enter your name:</label>
+                <input type="text" id="name" name="name" required>
+                <button type="submit">Start Quiz</button>
+            </form>
+        </div>
+        <div id="quiz" style="display: none;">
+            <div id="question-counter"></div>
+            <div id="question"></div>
+            <div id="options"></div>
+            <button id="submit-button">Retry</button>
+            <p id="result"></p>
+            <p id="timer"></p>
+        </div>
+        <div id="leaderboard" style="display: none;">
+            <h2>Leaderboard</h2>
+            <ol id="scores"></ol>
+        </div>
+    </div>
+	</div>
+
+    <script>
+        const questions = [
+            {
+                question: "Which of the following is NOT a semantic HTML element?",
+                options: ["<header>", "<div>", "<nav>", "<footer>"],
+                answer: 1 // It's <div> which is not a semantic element
+            },
+            {
+                question: "What does CSS stand for?",
+                options: ["Creative Style Sheets", "Cascading Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"],
+                answer: 1 // Correct answer is "Cascading Style Sheets"
+            },
+            {
+                question: "Which CSS property is used to change the text color of an element?",
+                options: ["color", "text-color", "font-color", "text-style"],
+                answer: 0 // Correct answer is "color"
+            },
+            {
+                question: "Which HTML tag is used to link an external JavaScript file?",
+                options: ["<script>", "<link>", "<js>", "<javascript>"],
+                answer: 0 // Correct answer is "<script>"
+            },
+            {
+                question: "What does HTML stand for?",
+                options: ["Hyper Text Markup Language", "Hyperlinks and Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup"],
+                answer: 0 // Correct answer is "Hyper Text Markup Language"
+            },
+            {
+                question: "Which of the following is NOT a valid way to include CSS in your HTML document?",
+                options: ["Inline CSS", "Internal CSS", "External CSS", "Embedded CSS"],
+                answer: 3 // Correct answer is "Embedded CSS"
+            },
+            {
+                question: "What is the correct way to comment in JavaScript?",
+                options: ["// Comment", "<!-- Comment -->", "/* Comment */", "(* Comment *)"],
+                answer: 2 // Correct answer is "/* Comment */"
+            },
+            {
+                question: "What is the result of 5 + '5' in JavaScript?",
+                options: ["10", "55", "Error", "Undefined"],
+                answer: 1 // Correct answer is "55"
+            },
+            {
+                question: "Which of the following is NOT a loop in JavaScript?",
+                options: ["for loop", "while loop", "do-while loop", "foreach loop"],
+                answer: 3 // Correct answer is "foreach loop"
+            },
+            {
+                question: "What is the output of the following code: console.log(typeof([]));",
+                options: ["'array'", "'object'", "'array' or 'object'", "'undefined'"],
+                answer: 1 // Correct answer is "'object'"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 120; // 2 minutes in seconds
+        let timerInterval;
+        let leaderboard = [];
+
+        const nameForm = document.getElementById('name-form');
+        const nameInput = document.getElementById('name');
+        const nameEntry = document.getElementById('name-entry');
+        const quiz = document.getElementById('quiz');
+        const leaderboardDiv = document.getElementById('leaderboard');
+        const scoresList = document.getElementById('scores');
+        const questionCounter = document.getElementById('question-counter');
+
+        nameForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = nameInput.value.trim();
+            if (name !== '') {
+                nameEntry.style.display = 'none';
+                quiz.style.display = 'block';
+                leaderboardDiv.style.display = 'none';
+                startTimer();
+                displayQuestion();
+            } else {
+                alert('Please enter your name.');
+            }
+        });
+
+        // Function to start the timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showResult();
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Function to update timer display
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `Time left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        // Function to display the current question and options
+        function displayQuestion() {
+            const currentQuizQuestion = questions[currentQuestion];
+            questionCounter.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('question').textContent = currentQuizQuestion.question;
+            
+            const optionsElement = document.getElementById('options');
+            optionsElement.innerHTML = '';
+            currentQuizQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = `${index + 1}. ${option}`;
+                optionElement.setAttribute('data-index', index);
+                optionElement.addEventListener('click', selectOption);
+                optionsElement.appendChild(optionElement);
+            });
+        }
+
+        function selectOption() {
+            const selectedOptionIndex = parseInt(this.getAttribute('data-index'));
+            const currentQuizQuestion = questions[currentQuestion];
+            if (selectedOptionIndex === currentQuizQuestion.answer) {
+                score++;
+            }
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+            } else {
+                clearInterval(timerInterval); // Stop the timer
+                showResult();
+            }
+        }
+
+        function showResult() {
+            const name = nameInput.value.trim();
+    const resultElement = document.getElementById('result');
+    resultElement.textContent = `${name}, you scored ${score} out of ${questions.length}!`;
+    if (score === questions.length) {
+        resultElement.style.color = 'green';
+    } else {
+        resultElement.style.color = 'red';
+    }
+    updateLeaderboard(name, score);
+    displayLeaderboard();
+
+    // Replace the submit button with a retry button
+    const submitButton = document.getElementById('submit-button');
+    submitButton.textContent = 'Retry';
+    submitButton.onclick = retryQuiz;
+        }
+
+		function retryQuiz() {
+    // Reset quiz state
+    currentQuestion = 0;
+    score = 0;
+    timeLeft -=15; // Reset timer
+    clearInterval(timerInterval); // Stop timer if running
+    updateTimerDisplay(); // Reset timer display
+    startTimer();
+	displayQuestion();
+}
+
+// Assign retryQuiz function to the button click event
+const submitButton = document.getElementById('submit-button');
+submitButton.addEventListener('click', retryQuiz);
+
+        function updateLeaderboard(name, score) {
+            leaderboard.push({ name, score });
+            leaderboard.sort((a, b) => b.score - a.score); // Sort leaderboard by score descending
+            if (leaderboard.length > 5) {
+                leaderboard.pop(); // Keep only top 5 scores
+            }
+        }
+
+        function displayLeaderboard() {
+            scoresList.innerHTML = ''; // Clear previous leaderboard
+            leaderboard.forEach((entry, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+                scoresList.appendChild(listItem);
+            });
+            leaderboardDiv.style.display = 'block';
+        }
+
+        
+
+        // Load leaderboard data from localStorage on page load
+        window.addEventListener('load', function () {
+            const storedLeaderboard = localStorage.getItem('leaderboard');
+            if (storedLeaderboard) {
+                leaderboard = JSON.parse(storedLeaderboard);
+                displayLeaderboard();
+            }
+        });
+
+        // Function to update leaderboard data in localStorage
+        function updateLeaderboard(name, score) {
+            leaderboard.push({ name, score });
+            leaderboard.sort((a, b) => b.score - a.score);
+            if (leaderboard.length > 5) {
+                leaderboard.pop();
+            }
+            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+        }
+    </script>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+       <style>
+        :root {
+            --body-color: rgb(250, 250, 250);
+            --color-white: rgb(255, 255, 255);
+            --text-color-second: rgb(68, 68, 68);
+            --text-color-third: rgb(30, 159, 171);
+            --first-color: rgb(110, 87, 224);
+            --first-color-hover: rgb(40, 91, 212);
+            --second-color: rgb(0, 201, 255);
+            --third-color: rgb(192, 166, 49);
+            --first-shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+    font-family: Arial, sans-serif;
+    background-color: var(--body-color);
+    margin: 0;
+    padding: 0;
+    color: var(--text-color-second);
+    overflow: hidden; /* Add this line to prevent scrollbars */
+}
+
+.background {
+    display: flex;
+    height: 100vh; /* Update this line to set the height to viewport height */
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, rgb(26, 1, 117) 0%, rgba(225, 5, 34, 0) 70%) repeat scroll 0% 0%, 
+                linear-gradient(135deg, rgb(225, 5, 152) 10%, rgba(49, 5, 209, 0) 80%) repeat scroll 0% 0%, 
+                linear-gradient(225deg, hsla(179, 81%, 45%, 1) 10%, rgba(10, 219, 216, 0) 80%) repeat scroll 0% 0%,
+                rgba(0, 0, 0, 0) linear-gradient(315deg, rgb(189, 5, 245) 100%, rgba(9, 245, 5, 0) 70%) repeat scroll 0% 0%;
+    position: relative;
+    z-index: 0;
+    overflow: hidden; /* Add this line to prevent overflow */
+}
+
+
+
+        .background .shape {
+            filter: blur(465px);
+            position: absolute;
+        }
+
+        .background .shape:nth-child(1) {
+            background-color: #ffb0d8;
+            top: -340px;
+            width: 300px;
+            height: 300px;
+        }
+
+        .background .shape:nth-child(2) {
+            left: 100px;
+            bottom: -150px;
+            background-color: #c26cf3;
+            width: 200px;
+            height: 210px;
+        }
+
+        .background .shape:nth-child(3) {
+            background-color: #87cfdf;
+            bottom: -150px;
+            right: 100px;
+            width: 300px;
+            height: 300px;
+        }
+
+       #quiz-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: var(--color-white);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px var(--first-shadow-color);
+    position: relative;
+    z-index: 1; /* Set z-index to a higher value than background */
+}
+        h1 {
+            margin-top: 0;
+            color: var(--text-color-third);
+        }
+
+        .option {
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid var(--text-color-third);
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: var(--first-color-hover);
+        }
+
+        #result {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        #question-counter {
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    
+    <div id="quiz-container">
+        <h1>HTML, CSS, and JavaScript Quiz</h1>
+        <div id="name-entry">
+            <h2>Welcome to the Quiz!</h2>
+            <form id="name-form">
+                <label for="name">Enter your name:</label>
+                <input type="text" id="name" name="name" required>
+                <button type="submit">Start Quiz</button>
+            </form>
+        </div>
+        <div id="quiz" style="display: none;">
+            <div id="question-counter"></div>
+            <div id="question"></div>
+            <div id="options"></div>
+            <button id="submit-button">Retry</button>
+            <p id="result"></p>
+            <p id="timer"></p>
+        </div>
+        <div id="leaderboard" style="display: none;">
+            <h2>Leaderboard</h2>
+            <ol id="scores"></ol>
+        </div>
+    </div>
+	</div>
+
+    <script>
+        const questions = [
+            {
+                question: "Which of the following is NOT a semantic HTML element?",
+                options: ["<header>", "<div>", "<nav>", "<footer>"],
+                answer: 1 // It's <div> which is not a semantic element
+            },
+            {
+                question: "What does CSS stand for?",
+                options: ["Creative Style Sheets", "Cascading Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"],
+                answer: 1 // Correct answer is "Cascading Style Sheets"
+            },
+            {
+                question: "Which CSS property is used to change the text color of an element?",
+                options: ["color", "text-color", "font-color", "text-style"],
+                answer: 0 // Correct answer is "color"
+            },
+            {
+                question: "Which HTML tag is used to link an external JavaScript file?",
+                options: ["<script>", "<link>", "<js>", "<javascript>"],
+                answer: 0 // Correct answer is "<script>"
+            },
+            {
+                question: "What does HTML stand for?",
+                options: ["Hyper Text Markup Language", "Hyperlinks and Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup"],
+                answer: 0 // Correct answer is "Hyper Text Markup Language"
+            },
+            {
+                question: "Which of the following is NOT a valid way to include CSS in your HTML document?",
+                options: ["Inline CSS", "Internal CSS", "External CSS", "Embedded CSS"],
+                answer: 3 // Correct answer is "Embedded CSS"
+            },
+            {
+                question: "What is the correct way to comment in JavaScript?",
+                options: ["// Comment", "<!-- Comment -->", "/* Comment */", "(* Comment *)"],
+                answer: 2 // Correct answer is "/* Comment */"
+            },
+            {
+                question: "What is the result of 5 + '5' in JavaScript?",
+                options: ["10", "55", "Error", "Undefined"],
+                answer: 1 // Correct answer is "55"
+            },
+            {
+                question: "Which of the following is NOT a loop in JavaScript?",
+                options: ["for loop", "while loop", "do-while loop", "foreach loop"],
+                answer: 3 // Correct answer is "foreach loop"
+            },
+            {
+                question: "What is the output of the following code: console.log(typeof([]));",
+                options: ["'array'", "'object'", "'array' or 'object'", "'undefined'"],
+                answer: 1 // Correct answer is "'object'"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 120; // 2 minutes in seconds
+        let timerInterval;
+        let leaderboard = [];
+
+        const nameForm = document.getElementById('name-form');
+        const nameInput = document.getElementById('name');
+        const nameEntry = document.getElementById('name-entry');
+        const quiz = document.getElementById('quiz');
+        const leaderboardDiv = document.getElementById('leaderboard');
+        const scoresList = document.getElementById('scores');
+        const questionCounter = document.getElementById('question-counter');
+
+        nameForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = nameInput.value.trim();
+            if (name !== '') {
+                nameEntry.style.display = 'none';
+                quiz.style.display = 'block';
+                leaderboardDiv.style.display = 'none';
+                startTimer();
+                displayQuestion();
+            } else {
+                alert('Please enter your name.');
+            }
+        });
+
+        // Function to start the timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showResult();
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Function to update timer display
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `Time left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        // Function to display the current question and options
+        function displayQuestion() {
+            const currentQuizQuestion = questions[currentQuestion];
+            questionCounter.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('question').textContent = currentQuizQuestion.question;
+            
+            const optionsElement = document.getElementById('options');
+            optionsElement.innerHTML = '';
+            currentQuizQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = `${index + 1}. ${option}`;
+                optionElement.setAttribute('data-index', index);
+                optionElement.addEventListener('click', selectOption);
+                optionsElement.appendChild(optionElement);
+            });
+        }
+
+        function selectOption() {
+            const selectedOptionIndex = parseInt(this.getAttribute('data-index'));
+            const currentQuizQuestion = questions[currentQuestion];
+            if (selectedOptionIndex === currentQuizQuestion.answer) {
+                score++;
+            }
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+            } else {
+                clearInterval(timerInterval); // Stop the timer
+                showResult();
+            }
+        }
+
+        function showResult() {
+            const name = nameInput.value.trim();
+    const resultElement = document.getElementById('result');
+    resultElement.textContent = `${name}, you scored ${score} out of ${questions.length}!`;
+    if (score === questions.length) {
+        resultElement.style.color = 'green';
+    } else {
+        resultElement.style.color = 'red';
+    }
+    updateLeaderboard(name, score);
+    displayLeaderboard();
+
+    // Replace the submit button with a retry button
+    const submitButton = document.getElementById('submit-button');
+    submitButton.textContent = 'Retry';
+    submitButton.onclick = retryQuiz;
+        }
+
+		function retryQuiz() {
+    // Reset quiz state
+    currentQuestion = 0;
+    score = 0;
+    timeLeft -=15; // Reset timer
+    clearInterval(timerInterval); // Stop timer if running
+    updateTimerDisplay(); // Reset timer display
+    startTimer();
+	displayQuestion();
+}
+
+// Assign retryQuiz function to the button click event
+const submitButton = document.getElementById('submit-button');
+submitButton.addEventListener('click', retryQuiz);
+
+        function updateLeaderboard(name, score) {
+            leaderboard.push({ name, score });
+            leaderboard.sort((a, b) => b.score - a.score); // Sort leaderboard by score descending
+            if (leaderboard.length > 5) {
+                leaderboard.pop(); // Keep only top 5 scores
+            }
+        }
+
+        function displayLeaderboard() {
+            scoresList.innerHTML = ''; // Clear previous leaderboard
+            leaderboard.forEach((entry, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+                scoresList.appendChild(listItem);
+            });
+            leaderboardDiv.style.display = 'block';
+        }
+
+        
+
+        // Load leaderboard data from localStorage on page load
+        window.addEventListener('load', function () {
+            const storedLeaderboard = localStorage.getItem('leaderboard');
+            if (storedLeaderboard) {
+                leaderboard = JSON.parse(storedLeaderboard);
+                displayLeaderboard();
+            }
+        });
+
+        // Function to update leaderboard data in localStorage
+        function updateLeaderboard(name, score) {
+            leaderboard.push({ name, score });
+            leaderboard.sort((a, b) => b.score - a.score);
+            if (leaderboard.length > 5) {
+                leaderboard.pop();
+            }
+            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+        }
+    </script>
+</body>
+</html>
+
+
+
