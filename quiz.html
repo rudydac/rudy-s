@@ -23,12 +23,12 @@
     margin: 0;
     padding: 0;
     color: var(--text-color-second);
-    overflow: hidden; /* Add this line to prevent scrollbars */
+    overflow: hidden; 
 }
 
 .background {
     display: flex;
-    height: 100vh; /* Update this line to set the height to viewport height */
+    height: 100vh; 
     width: 100vw;
     justify-content: center;
     align-items: center;
@@ -38,7 +38,7 @@
                 rgba(0, 0, 0, 0) linear-gradient(315deg, rgb(189, 5, 245) 100%, rgba(9, 245, 5, 0) 70%) repeat scroll 0% 0%;
     position: relative;
     z-index: 0;
-    overflow: hidden; /* Add this line to prevent overflow */
+    overflow: hidden; 
 }
 
 
@@ -79,7 +79,7 @@
     padding: 20px;
     box-shadow: 0 0 10px var(--first-shadow-color);
     position: relative;
-    z-index: 1; /* Set z-index to a higher value than background */
+    z-index: 1; 
 }
         h1 {
             margin-top: 0;
@@ -146,58 +146,58 @@
             {
                 question: "Which of the following is NOT a semantic HTML element?",
                 options: ["<header>", "<div>", "<nav>", "<footer>"],
-                answer: 1 // It's <div> which is not a semantic element
+                answer: 1 
             },
             {
                 question: "What does CSS stand for?",
                 options: ["Creative Style Sheets", "Cascading Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"],
-                answer: 1 // Correct answer is "Cascading Style Sheets"
+                answer: 1 
             },
             {
                 question: "Which CSS property is used to change the text color of an element?",
                 options: ["color", "text-color", "font-color", "text-style"],
-                answer: 0 // Correct answer is "color"
+                answer: 0 
             },
             {
                 question: "Which HTML tag is used to link an external JavaScript file?",
                 options: ["<script>", "<link>", "<js>", "<javascript>"],
-                answer: 0 // Correct answer is "<script>"
+                answer: 0 
             },
             {
                 question: "What does HTML stand for?",
                 options: ["Hyper Text Markup Language", "Hyperlinks and Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup"],
-                answer: 0 // Correct answer is "Hyper Text Markup Language"
+                answer: 0 
             },
             {
                 question: "Which of the following is NOT a valid way to include CSS in your HTML document?",
                 options: ["Inline CSS", "Internal CSS", "External CSS", "Embedded CSS"],
-                answer: 3 // Correct answer is "Embedded CSS"
+                answer: 3 
             },
             {
                 question: "What is the correct way to comment in JavaScript?",
                 options: ["// Comment", "<!-- Comment -->", "/* Comment */", "(* Comment *)"],
-                answer: 2 // Correct answer is "/* Comment */"
+                answer: 2 
             },
             {
                 question: "What is the result of 5 + '5' in JavaScript?",
                 options: ["10", "55", "Error", "Undefined"],
-                answer: 1 // Correct answer is "55"
+                answer: 1 
             },
             {
                 question: "Which of the following is NOT a loop in JavaScript?",
                 options: ["for loop", "while loop", "do-while loop", "foreach loop"],
-                answer: 3 // Correct answer is "foreach loop"
+                answer: 3 
             },
             {
                 question: "What is the output of the following code: console.log(typeof([]));",
                 options: ["'array'", "'object'", "'array' or 'object'", "'undefined'"],
-                answer: 1 // Correct answer is "'object'"
+                answer: 1 
             }
         ];
 
         let currentQuestion = 0;
         let score = 0;
-        let timeLeft = 120; // 2 minutes in seconds
+        let timeLeft = 120; 
         let timerInterval;
         let leaderboard = [];
 
@@ -223,7 +223,6 @@
             }
         });
 
-        // Function to start the timer
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -235,7 +234,6 @@
             }, 1000);
         }
 
-        // Function to update timer display
         function updateTimerDisplay() {
             const timerElement = document.getElementById('timer');
             const minutes = Math.floor(timeLeft / 60);
@@ -243,7 +241,6 @@
             timerElement.textContent = `Time left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }
 
-        // Function to display the current question and options
         function displayQuestion() {
             const currentQuizQuestion = questions[currentQuestion];
             questionCounter.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
@@ -288,37 +285,34 @@
     updateLeaderboard(name, score);
     displayLeaderboard();
 
-    // Replace the submit button with a retry button
     const submitButton = document.getElementById('submit-button');
     submitButton.textContent = 'Retry';
     submitButton.onclick = retryQuiz;
         }
 
 		function retryQuiz() {
-    // Reset quiz state
     currentQuestion = 0;
     score = 0;
-    timeLeft -=15; // Reset timer
-    clearInterval(timerInterval); // Stop timer if running
-    updateTimerDisplay(); // Reset timer display
+    timeLeft -=15; 
+    clearInterval(timerInterval); 
+    updateTimerDisplay(); 
     startTimer();
 	displayQuestion();
 }
 
-// Assign retryQuiz function to the button click event
 const submitButton = document.getElementById('submit-button');
 submitButton.addEventListener('click', retryQuiz);
 
         function updateLeaderboard(name, score) {
             leaderboard.push({ name, score });
-            leaderboard.sort((a, b) => b.score - a.score); // Sort leaderboard by score descending
+            leaderboard.sort((a, b) => b.score - a.score); 
             if (leaderboard.length > 5) {
-                leaderboard.pop(); // Keep only top 5 scores
+                leaderboard.pop(); 
             }
         }
 
         function displayLeaderboard() {
-            scoresList.innerHTML = ''; // Clear previous leaderboard
+            scoresList.innerHTML = ''; 
             leaderboard.forEach((entry, index) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
@@ -329,7 +323,6 @@ submitButton.addEventListener('click', retryQuiz);
 
         
 
-        // Load leaderboard data from localStorage on page load
         window.addEventListener('load', function () {
             const storedLeaderboard = localStorage.getItem('leaderboard');
             if (storedLeaderboard) {
@@ -338,7 +331,6 @@ submitButton.addEventListener('click', retryQuiz);
             }
         });
 
-        // Function to update leaderboard data in localStorage
         function updateLeaderboard(name, score) {
             leaderboard.push({ name, score });
             leaderboard.sort((a, b) => b.score - a.score);
@@ -501,58 +493,58 @@ submitButton.addEventListener('click', retryQuiz);
             {
                 question: "Which of the following is NOT a semantic HTML element?",
                 options: ["<header>", "<div>", "<nav>", "<footer>"],
-                answer: 1 // It's <div> which is not a semantic element
+                answer: 1 
             },
             {
                 question: "What does CSS stand for?",
                 options: ["Creative Style Sheets", "Cascading Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"],
-                answer: 1 // Correct answer is "Cascading Style Sheets"
+                answer: 1 
             },
             {
                 question: "Which CSS property is used to change the text color of an element?",
                 options: ["color", "text-color", "font-color", "text-style"],
-                answer: 0 // Correct answer is "color"
+                answer: 0 
             },
             {
                 question: "Which HTML tag is used to link an external JavaScript file?",
                 options: ["<script>", "<link>", "<js>", "<javascript>"],
-                answer: 0 // Correct answer is "<script>"
+                answer: 0 
             },
             {
                 question: "What does HTML stand for?",
                 options: ["Hyper Text Markup Language", "Hyperlinks and Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup"],
-                answer: 0 // Correct answer is "Hyper Text Markup Language"
+                answer: 0 
             },
             {
                 question: "Which of the following is NOT a valid way to include CSS in your HTML document?",
                 options: ["Inline CSS", "Internal CSS", "External CSS", "Embedded CSS"],
-                answer: 3 // Correct answer is "Embedded CSS"
+                answer: 3 
             },
             {
                 question: "What is the correct way to comment in JavaScript?",
                 options: ["// Comment", "<!-- Comment -->", "/* Comment */", "(* Comment *)"],
-                answer: 2 // Correct answer is "/* Comment */"
+                answer: 2 
             },
             {
                 question: "What is the result of 5 + '5' in JavaScript?",
                 options: ["10", "55", "Error", "Undefined"],
-                answer: 1 // Correct answer is "55"
+                answer: 1 
             },
             {
                 question: "Which of the following is NOT a loop in JavaScript?",
                 options: ["for loop", "while loop", "do-while loop", "foreach loop"],
-                answer: 3 // Correct answer is "foreach loop"
+                answer: 3 
             },
             {
                 question: "What is the output of the following code: console.log(typeof([]));",
                 options: ["'array'", "'object'", "'array' or 'object'", "'undefined'"],
-                answer: 1 // Correct answer is "'object'"
+                answer: 1 
             }
         ];
 
         let currentQuestion = 0;
         let score = 0;
-        let timeLeft = 120; // 2 minutes in seconds
+        let timeLeft = 120; 
         let timerInterval;
         let leaderboard = [];
 
@@ -578,7 +570,6 @@ submitButton.addEventListener('click', retryQuiz);
             }
         });
 
-        // Function to start the timer
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -590,7 +581,6 @@ submitButton.addEventListener('click', retryQuiz);
             }, 1000);
         }
 
-        // Function to update timer display
         function updateTimerDisplay() {
             const timerElement = document.getElementById('timer');
             const minutes = Math.floor(timeLeft / 60);
@@ -598,7 +588,6 @@ submitButton.addEventListener('click', retryQuiz);
             timerElement.textContent = `Time left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }
 
-        // Function to display the current question and options
         function displayQuestion() {
             const currentQuizQuestion = questions[currentQuestion];
             questionCounter.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
@@ -626,7 +615,7 @@ submitButton.addEventListener('click', retryQuiz);
             if (currentQuestion < questions.length) {
                 displayQuestion();
             } else {
-                clearInterval(timerInterval); // Stop the timer
+                clearInterval(timerInterval); 
                 showResult();
             }
         }
@@ -643,24 +632,22 @@ submitButton.addEventListener('click', retryQuiz);
     updateLeaderboard(name, score);
     displayLeaderboard();
 
-    // Replace the submit button with a retry button
     const submitButton = document.getElementById('submit-button');
     submitButton.textContent = 'Retry';
     submitButton.onclick = retryQuiz;
         }
 
 		function retryQuiz() {
-    // Reset quiz state
+    
     currentQuestion = 0;
     score = 0;
-    timeLeft -=15; // Reset timer
-    clearInterval(timerInterval); // Stop timer if running
-    updateTimerDisplay(); // Reset timer display
+    timeLeft -=15; 
+    clearInterval(timerInterval); 
+    updateTimerDisplay(); 
     startTimer();
 	displayQuestion();
 }
 
-// Assign retryQuiz function to the button click event
 const submitButton = document.getElementById('submit-button');
 submitButton.addEventListener('click', retryQuiz);
 
@@ -684,7 +671,6 @@ submitButton.addEventListener('click', retryQuiz);
 
         
 
-        // Load leaderboard data from localStorage on page load
         window.addEventListener('load', function () {
             const storedLeaderboard = localStorage.getItem('leaderboard');
             if (storedLeaderboard) {
@@ -693,7 +679,6 @@ submitButton.addEventListener('click', retryQuiz);
             }
         });
 
-        // Function to update leaderboard data in localStorage
         function updateLeaderboard(name, score) {
             leaderboard.push({ name, score });
             leaderboard.sort((a, b) => b.score - a.score);
@@ -856,58 +841,58 @@ submitButton.addEventListener('click', retryQuiz);
             {
                 question: "Which of the following is NOT a semantic HTML element?",
                 options: ["<header>", "<div>", "<nav>", "<footer>"],
-                answer: 1 // It's <div> which is not a semantic element
+                answer: 1 
             },
             {
                 question: "What does CSS stand for?",
                 options: ["Creative Style Sheets", "Cascading Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"],
-                answer: 1 // Correct answer is "Cascading Style Sheets"
+                answer: 1 
             },
             {
                 question: "Which CSS property is used to change the text color of an element?",
                 options: ["color", "text-color", "font-color", "text-style"],
-                answer: 0 // Correct answer is "color"
+                answer: 0 
             },
             {
                 question: "Which HTML tag is used to link an external JavaScript file?",
                 options: ["<script>", "<link>", "<js>", "<javascript>"],
-                answer: 0 // Correct answer is "<script>"
+                answer: 0 
             },
             {
                 question: "What does HTML stand for?",
                 options: ["Hyper Text Markup Language", "Hyperlinks and Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup"],
-                answer: 0 // Correct answer is "Hyper Text Markup Language"
+                answer: 0 
             },
             {
                 question: "Which of the following is NOT a valid way to include CSS in your HTML document?",
                 options: ["Inline CSS", "Internal CSS", "External CSS", "Embedded CSS"],
-                answer: 3 // Correct answer is "Embedded CSS"
+                answer: 3 
             },
             {
                 question: "What is the correct way to comment in JavaScript?",
                 options: ["// Comment", "<!-- Comment -->", "/* Comment */", "(* Comment *)"],
-                answer: 2 // Correct answer is "/* Comment */"
+                answer: 2 
             },
             {
                 question: "What is the result of 5 + '5' in JavaScript?",
                 options: ["10", "55", "Error", "Undefined"],
-                answer: 1 // Correct answer is "55"
+                answer: 1 
             },
             {
                 question: "Which of the following is NOT a loop in JavaScript?",
                 options: ["for loop", "while loop", "do-while loop", "foreach loop"],
-                answer: 3 // Correct answer is "foreach loop"
+                answer: 3 
             },
             {
                 question: "What is the output of the following code: console.log(typeof([]));",
                 options: ["'array'", "'object'", "'array' or 'object'", "'undefined'"],
-                answer: 1 // Correct answer is "'object'"
+                answer: 1 
             }
         ];
 
         let currentQuestion = 0;
         let score = 0;
-        let timeLeft = 120; // 2 minutes in seconds
+        let timeLeft = 120; 
         let timerInterval;
         let leaderboard = [];
 
@@ -933,7 +918,6 @@ submitButton.addEventListener('click', retryQuiz);
             }
         });
 
-        // Function to start the timer
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -945,7 +929,6 @@ submitButton.addEventListener('click', retryQuiz);
             }, 1000);
         }
 
-        // Function to update timer display
         function updateTimerDisplay() {
             const timerElement = document.getElementById('timer');
             const minutes = Math.floor(timeLeft / 60);
@@ -953,7 +936,6 @@ submitButton.addEventListener('click', retryQuiz);
             timerElement.textContent = `Time left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }
 
-        // Function to display the current question and options
         function displayQuestion() {
             const currentQuizQuestion = questions[currentQuestion];
             questionCounter.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
@@ -981,7 +963,7 @@ submitButton.addEventListener('click', retryQuiz);
             if (currentQuestion < questions.length) {
                 displayQuestion();
             } else {
-                clearInterval(timerInterval); // Stop the timer
+                clearInterval(timerInterval); 
                 showResult();
             }
         }
@@ -998,37 +980,35 @@ submitButton.addEventListener('click', retryQuiz);
     updateLeaderboard(name, score);
     displayLeaderboard();
 
-    // Replace the submit button with a retry button
     const submitButton = document.getElementById('submit-button');
     submitButton.textContent = 'Retry';
     submitButton.onclick = retryQuiz;
         }
 
 		function retryQuiz() {
-    // Reset quiz state
+    
     currentQuestion = 0;
     score = 0;
-    timeLeft -=15; // Reset timer
-    clearInterval(timerInterval); // Stop timer if running
-    updateTimerDisplay(); // Reset timer display
+    timeLeft -=15; 
+    clearInterval(timerInterval); 
+    updateTimerDisplay(); 
     startTimer();
 	displayQuestion();
 }
 
-// Assign retryQuiz function to the button click event
 const submitButton = document.getElementById('submit-button');
 submitButton.addEventListener('click', retryQuiz);
 
         function updateLeaderboard(name, score) {
             leaderboard.push({ name, score });
-            leaderboard.sort((a, b) => b.score - a.score); // Sort leaderboard by score descending
+            leaderboard.sort((a, b) => b.score - a.score); 
             if (leaderboard.length > 5) {
-                leaderboard.pop(); // Keep only top 5 scores
+                leaderboard.pop(); 
             }
         }
 
         function displayLeaderboard() {
-            scoresList.innerHTML = ''; // Clear previous leaderboard
+            scoresList.innerHTML = ''; 
             leaderboard.forEach((entry, index) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
@@ -1039,7 +1019,6 @@ submitButton.addEventListener('click', retryQuiz);
 
         
 
-        // Load leaderboard data from localStorage on page load
         window.addEventListener('load', function () {
             const storedLeaderboard = localStorage.getItem('leaderboard');
             if (storedLeaderboard) {
@@ -1048,7 +1027,6 @@ submitButton.addEventListener('click', retryQuiz);
             }
         });
 
-        // Function to update leaderboard data in localStorage
         function updateLeaderboard(name, score) {
             leaderboard.push({ name, score });
             leaderboard.sort((a, b) => b.score - a.score);
