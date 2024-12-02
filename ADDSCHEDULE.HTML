@@ -96,7 +96,7 @@
   <script>
     function addClass() {
       var table = document.getElementById("scheduleTable");
-      var row = table.insertRow(-1); // Insert a row at the end of the table
+      var row = table.insertRow(-1); 
       var dayCell = row.insertCell(0);
       var timeCell = row.insertCell(1);
       var courseCell = row.insertCell(2);
@@ -104,7 +104,6 @@
       var instructorCell = row.insertCell(4);
       var creditsCell = row.insertCell(5);
 
-      // Get values from form
       dayCell.innerHTML = document.getElementById("day").value;
       timeCell.innerHTML = document.getElementById("time").value;
       courseCell.innerHTML = document.getElementById("course").value;
@@ -112,7 +111,6 @@
       instructorCell.innerHTML = document.getElementById("instructor").value;
       creditsCell.innerHTML = document.getElementById("credits").value;
 
-      // Update total credits and hours
       updateTotals();
     }
 
@@ -128,7 +126,6 @@
         }
       }
 
-      // Assuming each class is 1 hour 15 minutes for simplicity
       hours = (table.rows.length - 2) * 1.25; // subtract header and total row
 
       document.getElementById("totalCredits").innerHTML = totalCredits;
@@ -145,7 +142,6 @@
   </header>
   
   <section>
-    <!-- Form to add classes -->
     <form onsubmit="return false;">
       Day: <input type="text" id="day" required>
       Time: <input type="text" id="time" required>
@@ -164,7 +160,6 @@
         <th>Instructor</th>
         <th>Credits</th>
       </tr>
-      <!-- Data rows added dynamically -->
       <tr>
         <td>Total Of Hours:</td>
         <td id="totalHours">0 Hours</td>
@@ -183,35 +178,26 @@
     <p>&copy; 2024 Rudy Daccache .</p>
   </footer>
   <script>
-// Get all buttons with the 'data-download' attribute set to 'true'
 var downloadButtons = document.querySelectorAll('[data-download="true"]');
 
-// Loop through each button and attach the click event listener
 downloadButtons.forEach(function(button) {
     button.addEventListener('click', function() {
-        // Get the HTML content of the current page
         var htmlContent = document.documentElement.outerHTML;
         
-        // Create a blob containing the HTML content
         var blob = new Blob([htmlContent], {type: 'text/html'});
         
-        // Create a temporary URL for the blob
         var url = window.URL.createObjectURL(blob);
         
-        // Create a link element
         var a = document.createElement('a');
         a.href = url;
         
-        // Set the filename
         a.download = 'Your_Schedule.html';
         
-        // Append the link to the document body
         document.body.appendChild(a);
         
-        // Click the link programmatically
         a.click();
         
-        // Cleanup
+        
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
     });
