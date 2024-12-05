@@ -573,6 +573,7 @@ textarea{
     background-color: var( --first-color); /* Example color, you can change it */
     color: var( --color-white);
     font-size: 1.2rem;
+    text-decoration:none;
     font-weight: bold;
     border: none;
     border-radius: 5px;
@@ -589,11 +590,12 @@ textarea{
    display: flex;
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
-    width: 250px; /* Adjust width as needed */
+    width: 350px; /* Adjust width as needed */
     height: 50px; /* Adjust height as needed */
     background-color: var( --first-color); /* Example color, you can change it */
     color: var( --color-white);
     font-size: 1.2rem;
+    text-decoration:none;
     font-weight: bold;
     border: none;
     border-radius: 5px;
